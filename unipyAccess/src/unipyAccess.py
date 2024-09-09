@@ -57,6 +57,7 @@ class unipyAccess:
     def getUnifiUsers(self):
         response = requests.get(self.baseUrl + "/proxy/access/api/v2/users", headers=unifiHeaders, verify=self.verify)
         parsedData = json.loads(response.text.replace("'", '"'))
+        return parsedData
 
     def createUnifiUsers(self, users):
         for user in users:
