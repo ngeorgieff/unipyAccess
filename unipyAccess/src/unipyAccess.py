@@ -87,14 +87,17 @@ class unipyAccess:
             logger.info(f'Deleted user {user["id"]}: {response.text}')
 
     def setUsersGroup(self, users):
+        # API call to update user group
         for user in users:
             try:
                 user_url = f"{self.baseUrl}/proxy/access/api/v2/user/{user['id']}"
-                user_payload = json.dumps({"group_ids": [user["group"]]})
+                user_payload = json.dumps({
+                    "group_ids": [user["group"]]
+                })
                 response = requests.put(user_url, headers=unifiHeaders, data=user_payload, verify=self.verify)
-                if response.ok:
-                    print(f"User {user['id']} group updated successfully")
+                if response.status_code == 200:
+                    logger.info(f"Updated user group for {user['id']}")
                 else:
-                    logger.error(f"Failed to update user {user['id']} group: {response.text}")
+                    raise Exception(f"Failed to update user group with status code {response.status_code}: {response.text}")
             except Exception as e:
                 logger.error(f"Error updating group for user {user['id']}: {e}")
