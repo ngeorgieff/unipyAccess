@@ -2,7 +2,7 @@
 
 ## Overview
 
-unipyAccess is a Python class designed to interface with the Unifi Access API, allowing for the management of users in the system. This connector handles authentication, retrieval of users, creation, activation, deactivation, deletion, and updating of user groups. It simplifies interaction with the API by encapsulating the HTTP request logic, while automatically managing cookies and CSRF tokens.
+unipyAccess is a Python class designed to interface with the Unifi Access, allowing for the management of users in the system. This connector handles authentication, retrieval of users, creation, activation, deactivation, deletion, and updating of user groups.
 
 Disclaimer: This implementation does not use the new Unifi API. Instead, it utilizes authentication through a admin user account.
 
