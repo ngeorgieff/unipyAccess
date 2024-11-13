@@ -1,117 +1,184 @@
-# UnipyAccess API Connector
 
-## Overview
+# unipyaccess
 
-unipyAccess is a Python class designed to interface with the Unifi Access, allowing for the management of users in the system. This connector handles authentication, retrieval of users, creation, activation, deactivation, deletion, and updating of user groups.
+`unipyaccess` is a Python package designed to interface with the **Unifi Access** system. This package provides a simple and efficient way to manage users in Unifi Access, including authentication, retrieval, creation, activation, deactivation, deletion, and updating of user groups.
 
-Disclaimer: This implementation does not use the new Unifi API. Instead, it utilizes authentication through a admin user account.
+> **Note**: This implementation uses Unifi API endpoints with admin user authentication. It does **not** utilize the latest, in my opinion half-baked Unifi API.
+
+## Features
+
+- Authenticate with Unifi Access using admin credentials.
+- Retrieve, create, activate, deactivate, and delete user accounts.
+- Update user group assignments.
+
+## Installation
+
+Install the package via `pip`:
+
+```bash
+pip install unipyaccess
+```
 
 ## Requirements
 
 - Python 3.x
 - `requests` library
 
-To install the `requests` library, run:
+Install the requirements with:
+
 ```bash
 pip install requests
 ```
 
-# Class: unipyAccess
-## Initialization
-The **unipyAccess** class requires the following parameters upon initialization:
+## Environment Setup
 
-```python
-unipy = unipyAccess(baseUrl, username, password, verify)
-```
-`baseUrl`: Internal URL of the Unifi controller (e.g., https://unifi-controller.local).
-`username`: Username of the configuration user.
-`password`: Password of the configuration user.
-`verify`: Boolean (True/False) to indicate whether SSL verification should be performed on the requests. If None, verification defaults to True.
+Store your configuration details in a `.env` file:
 
-**Note**: Disabling SSL verification is not recommended in production environments as it can expose your application to security risks.
-
-## Example
-```python
-from unipyAccess import unipyAccess
-unipy = unipyAccess("https://unifi-controller.local", "unipy", "password123", verify=False)
-```
-## Methods
-### 1. getUnifiUsers()
-Retrieves the list of users from the Unifi Access system.
-
-```python
-unipy.getUnifiUsers()
+```bash
+UNIFI_CONTROLLER_ADDRESS=https://unifi-controller.local
+UNIFI_LOGIN=admin
+UNIFI_PASSWORD=password123
+VERIFY_SSL=False
 ```
 
-Example Response:
-```json
-[
+## Usage
+
+Import `unipyaccess` and use it in your Python script:
+
+```python
+from unipyaccess import UnipyAccess
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+# Initialize the UnipyAccess API client
+unifiApi = UnipyAccess(
+    base_url=os.getenv('UNIFI_CONTROLLER_ADDRESS'),
+    username=os.getenv('UNIFI_LOGIN'),
+    password=os.getenv('UNIFI_PASSWORD'),
+    verify=os.getenv('VERIFY_SSL')
+)
+
+# Example: Create a new user
+users = [
     {
-        "id": "12345",
         "first_name": "John",
         "last_name": "Doe",
-        "employee_number": "54321"
+        "PersonId": 124,
+        "group_ids": ["bc1bf76d-5d2a-4a90-ae50-6aca02bccc63"]
     }
 ]
+unifiApi.create_unifi_users(users)
 ```
-### 2. createUnifiUsers(users)
-Creates new users in the Unifi Access system.
 
-`users`: List of dictionaries, where each dictionary represents a user with the following structure:
-`first_name`: User's first name
-`last_name`: User's last name
-`PersonId`: Optional employee number (string)
-`group_ids`: Optional list of group IDs to assign to the user.
+## Methods
+
+### 1. `get_unifi_users()`
+Fetches the list of users from Unifi Access.
+
+**Usage:**
+
+```python
+users = unifiApi.get_unifi_users()
+print(users)
+```
+
+### 2. `create_unifi_users(users)`
+Creates new users.
+
+**Parameters:**
+- `users` (list): List of user dictionaries containing:
+  - `first_name` (str): User's first name.
+  - `last_name` (str): User's last name.
+  - `PersonId` (str): Optional employee number.
+  - `group_ids` (list): Optional list of group IDs.
+
+**Usage:**
+
 ```python
 users = [
-    {"first_name": "Alice", "last_name": "Smith", "PersonId": 123, "group_ids": [1, 2]},
-    {"first_name": "Bob", "last_name": "Jones", "PersonId": 456}
+    {"first_name": "Jane", "last_name": "Doe", "PersonId": "789", "group_ids": ["group-123"]}
 ]
-unipy.createUnifiUsers(users)
+unifiApi.create_unifi_users(users)
 ```
-### 3. deactivateUnifiUsers(users)
-Deactivates the given users.
 
-`users`: List of dictionaries with the following structure:
-`id`: User's unique ID
-```python
-users = [{"id": "1bae4670-c853-4740-8bbc-62ff90aaad07"}]
-unipy.deactivateUnifiUsers(users)
-```
-### 4. activateUnifiUsers(users)
-Activates the given users.
+### 3. `deactivate_unifi_users(users)`
+Deactivates users.
 
-`users`: List of dictionaries with the following structure:
-`id`: User's unique ID
+**Usage:**
 
 ```python
-users = [{"id": "1bae4670-c853-4740-8bbc-62ff90aaad07"}]
-unipy.activateUnifiUsers(users)
+users = [{"id": "user-123"}]
+unifiApi.deactivate_unifi_users(users)
 ```
-### 5. deleteUnifiUsers(users)
-Deletes users from the Unifi Access system.
 
-`users`: List of dictionaries with the following structure:
-`id`: User's unique ID
+### 4. `activate_unifi_users(users)`
+Activates users.
+
+**Usage:**
 
 ```python
-users = [{"id": "1bae4670-c853-4740-8bbc-62ff90aaad07"}]
-unipy.deleteUnifiUsers(users)
+users = [{"id": "user-123"}]
+unifiApi.activate_unifi_users(users)
 ```
-### 6. setUsersGroup(users)
-Assigns or updates the group of the specified users.
 
-`users`: List of dictionaries with the following structure:
-`id`: User's unique ID
-`group`: Group ID to assign to the user.
+### 5. `delete_unifi_users(users)`
+Deletes users.
+
+**Usage:**
 
 ```python
-
-users = [{"id": "12345", "group": 1}]
-unipy.setUsersGroup(users)
+users = [{"id": "user-123"}]
+unifiApi.delete_unifi_users(users)
 ```
 
-# License
-This project is licensed under the MIT License.
+### 6. `set_users_group(users)`
+Updates user group assignments.
 
-This README file provides an overview, usage instructions, and example code to help users understand and use the `unipyAccess` class effectively.
+**Usage:**
+
+```python
+users = [{"id": "user-123", "group": "group-456"}]
+unifiApi.set_users_group(users)
+```
+
+## Example Code
+
+```python
+from unipyaccess import UnipyAccess
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+unifiApi = UnipyAccess(
+    base_url=os.getenv('UNIFI_CONTROLLER_ADDRESS'),
+    username=os.getenv('UNIFI_LOGIN'),
+    password=os.getenv('UNIFI_PASSWORD'),
+    verify=os.getenv('VERIFY_SSL')
+)
+
+# Retrieve users
+print(unifiApi.get_unifi_users())
+
+# Create a user
+new_user = [{"first_name": "Alice", "last_name": "Smith", "PersonId": "125"}]
+unifiApi.create_unifi_users(new_user)
+
+# Activate a user
+unifiApi.activate_unifi_users([{"id": "user-123"}])
+
+# Deactivate a user
+unifiApi.deactivate_unifi_users([{"id": "user-123"}])
+
+# Delete a user
+unifiApi.delete_unifi_users([{"id": "user-123"}])
+
+# Update user group
+unifiApi.set_users_group([{"id": "user-123", "group": "group-789"}])
+```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
