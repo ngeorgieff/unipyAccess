@@ -5,7 +5,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='unipyAccess',
-    version='0.1',
+    version='__VERSION__',  # Placeholder for the version
     packages=find_packages(),
     install_requires=[
         'requests==2.32.3'
