@@ -1,9 +1,17 @@
+![licence](https://img.shields.io/badge/license-MIT-green)
+![issues](https://img.shields.io/github/issues/matejgordon/unipyaccess)
+[![deploy](https://img.shields.io/github/actions/workflow/status/matejgordon/unipyaccess/deploy.yml)](https://github.com/matejgordon/unipyaccess/actions/workflows/deploy.yml) 
+![tag](https://img.shields.io/github/v/tag/matejgordon/unipyaccess)
 
 # unipyaccess
 
 `unipyaccess` is a Python package designed to interface with the **Unifi Access** system. This package provides a simple and efficient way to manage users in Unifi Access, including authentication, retrieval, creation, activation, deactivation, deletion, and updating of user groups.
 
-> **Note**: This implementation uses Unifi API endpoints with admin user authentication. It does **not** utilize the latest, in my opinion half-baked Unifi API.
+> [!NOTE]  
+> This implementation uses Unifi API endpoints with admin user authentication. It does **not** utilize the latest, in my opinion half-baked Unifi API.
+
+> [!WARNING]  
+> 🚧 This project is under active development, and breaking changes are expected in upcoming releases.
 
 ## Features
 
